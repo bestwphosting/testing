@@ -53,7 +53,7 @@ resource "aws_instance" "this" {
   ami = data.aws_ami.this.id
   iam_instance_profile = var.instance_profile
   instance_type = var.instance_type
-  key_name = aws_key_pair.this[0].id
+  key_name = var.debug ? aws_key_pair.this[0].id : null
   user_data = <<EOF
 #!/bin/bash -ex
 DEBUG=${var.debug}
@@ -62,7 +62,7 @@ K6_RESULTS=test_results.csv
 K6_VER=v0.46.0
 PATH=${var.test_version}/${var.datestamp}/${var.hostname}
 
-sudo dnf install -y git-core
+dnf install -y git-core
 wget -O k6.tgz --tries=10 https://github.com/grafana/k6/releases/download/$K6_VER/k6-$K6_VER-linux-$K6_ARCH.tar.gz
 tar zxvf k6.tgz
 wget --tries=10 https://raw.githubusercontent.com/kevin-bockman/webhostreview/${var.test_version}/script.js
@@ -71,5 +71,5 @@ URL="https://${var.hostname}/${var.page_to_test}" ./k6-$K6_VER-linux-$K6_ARCH/k6
 aws s3 cp $K6_RESULTS s3://${var.bucket}/$PATH/$${PATH//\//-}-${var.region}
 [ -z "$DEBUG" ] || [ "$DEBUG" = "false" ] && shutdown -h now
 EOF
-  vpc_security_group_ids = [aws_security_group.ssh[0].id]
+  vpc_security_group_ids = var.debug ? [aws_security_group.ssh[0].id] : []
 }
