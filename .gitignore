@@ -1,0 +1,5 @@
+*.csv
+**/.terraform
+**/*.tfstate*
+**/*.sw[nop]
+**/plan
