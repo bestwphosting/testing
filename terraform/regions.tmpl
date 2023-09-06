@@ -14,7 +14,6 @@ module "{{REGION}}" {
   num_instances = var.num_instances
   page_to_test = var.page_to_test
   region = "{{REGION}}"
-  script = aws_s3_object.script.key
   test_version = var.test_version
   vpc_id = data.aws_vpc.default.id
 }

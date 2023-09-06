@@ -19,12 +19,6 @@ resource "aws_s3_bucket" "this" {
   bucket = var.bucket
 }
 
-resource "aws_s3_object" "script" {
-  bucket = aws_s3_bucket.this.id
-  key    = "script.js"
-  source = "../script.js"
-}
-
 resource "aws_iam_policy" "this" {
   name        = "allow-bucket-upload"
   policy = jsonencode({
@@ -34,7 +28,6 @@ resource "aws_iam_policy" "this" {
         "Sid" : "VisualEditor0",
         "Effect" : "Allow",
         "Action" : [
-          "s3:GetObject",
           "s3:PutObject"
         ],
         "Resource" : [

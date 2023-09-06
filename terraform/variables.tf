@@ -9,11 +9,12 @@ variable "debug" {
 }
 
 variable "hostname" {
+  description = "Hostname(s) to test (separated by spaces)"
   type = string
 }
 
 variable "instance_type" {
-  default = "t2.micro"
+  default = "m6g.medium" #"t4g.small"
   type = string
 }
 
@@ -23,7 +24,7 @@ variable "num_instances" {
 }
 
 variable "page_to_test" {
-  default = "eating-gluten-free-in-quito-ecuador/"
+  default = "ecuador-language-tips-learn-before-you-go-large/"
   type = string
 }
 

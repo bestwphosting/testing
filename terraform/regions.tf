@@ -20,7 +20,6 @@ module "us-east-1" {
   num_instances = var.num_instances
   page_to_test = var.page_to_test
   region = "us-east-1"
-  script = aws_s3_object.script.key
   test_version = var.test_version
   vpc_id = data.aws_vpc.default.id
 }

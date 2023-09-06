@@ -39,10 +39,6 @@ variable "region" {
   type = string
 }
 
-variable "script" {
-  type = string
-}
-
 variable "test_version" {
   type = string
 }

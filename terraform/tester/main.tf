@@ -5,7 +5,7 @@ data "aws_ami" "this" {
   owners      = ["amazon"]
   filter {
     name   = "architecture"
-    values = ["x86_64"] #["arm64"]
+    values = ["arm64"] #["x86_64"]
   }
   filter {
     name   = "name"
@@ -57,19 +57,27 @@ resource "aws_instance" "this" {
   user_data = <<EOF
 #!/bin/bash -ex
 DEBUG=${var.debug}
-K6_ARCH=amd64
+HOSTS=(${var.hostname})
+K6_ARCH=arm64 #amd64
 K6_RESULTS=test_results.csv
 K6_VER=v0.46.0
-PATH=${var.test_version}/${var.datestamp}/${var.hostname}
+SCRIPT=script.js
 
-dnf install -y git-core
 wget -O k6.tgz --tries=10 https://github.com/grafana/k6/releases/download/$K6_VER/k6-$K6_VER-linux-$K6_ARCH.tar.gz
 tar zxvf k6.tgz
-wget --tries=10 https://raw.githubusercontent.com/kevin-bockman/webhostreview/${var.test_version}/script.js
-#aws s3 cp s3://${var.bucket}/${var.script} .
-URL="https://${var.hostname}/${var.page_to_test}" ./k6-$K6_VER-linux-$K6_ARCH/k6 run --out csv=$K6_RESULTS ${var.script}
-aws s3 cp $K6_RESULTS s3://${var.bucket}/$PATH/$${PATH//\//-}-${var.region}
-[ -z "$DEBUG" ] || [ "$DEBUG" = "false" ] && shutdown -h now
+wget --tries=10 https://raw.githubusercontent.com/kevin-bockman/webhostreview/${var.test_version}/$SCRIPT
+
+for HOST in "$${HOSTS[@]}"; do
+  URL="https://$HOST/${var.page_to_test}" ./k6-$K6_VER-linux-$K6_ARCH/k6 run --out csv=$K6_RESULTS $SCRIPT;
+  S3_PATH=${var.test_version}/${var.datestamp}/$HOST;
+  aws s3 cp $K6_RESULTS s3://${var.bucket}/$S3_PATH/$${S3_PATH//\//-}-${var.region};
+  rm -f $K6_RESULTS;
+done
+[ -z "$DEBUG" ] || [ "$DEBUG" = "false" ] && sudo shutdown -h now || true
 EOF
   vpc_security_group_ids = var.debug ? [aws_security_group.ssh[0].id] : []
+
+  tags = {
+    type = "tester"
+  }
 }
