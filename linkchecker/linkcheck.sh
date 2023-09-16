@@ -1,13 +1,12 @@
 #!/bin/bash
 set -Eeo pipefail
-#HOST="template.debtleadgeneration.com"
-HOST="fastestwp.website"
-PAGE="/ecuador-language-tips-learn-before-you-go/" #"/"
-LOOPS=10 #5
+HOST="$1"
+PAGE="$2"
+LOOPS=10
 SLEEP=30
 
 CURL_HEADERS_INDEX=(-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*")
-CURL_HEADERS_UA=(-H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36") # -H "Accept-Encoding: gzip, deflate, br")
+CURL_HEADERS_UA=(-H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36")
 
 function validate() {
 	if [[ "$1" =~ ^/[^/] ]] || [[ "$1" =~ "$HOST" ]] || ([[ "$1" =~ ^[^/] ]] && [[ ! "$1" =~ ^http ]] && [[ "$1" =~ [\.\/] ]]); then
