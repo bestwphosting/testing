@@ -1,5 +1,10 @@
 variable "bucket" {
-  default = "webpagereviewstuff"
+  default = "bestwphosting-results"
+  type = string
+}
+
+variable "bucket_region" {
+  default = "us-west-2"
   type = string
 }
 

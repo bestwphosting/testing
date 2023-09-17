@@ -52,6 +52,7 @@ resource "aws_instance" "this" {
 
   ami = data.aws_ami.this.id
   iam_instance_profile = var.instance_profile
+  instance_initiated_shutdown_behavior = "terminate"
   instance_type = var.instance_type
   key_name = var.debug ? aws_key_pair.this[0].id : null
   user_data = <<EOF
@@ -65,12 +66,12 @@ SCRIPT=script.js
 
 wget -O k6.tgz --tries=10 https://github.com/grafana/k6/releases/download/$K6_VER/k6-$K6_VER-linux-$K6_ARCH.tar.gz
 tar zxvf k6.tgz
-wget --tries=10 https://raw.githubusercontent.com/kevin-bockman/webhostreview/${var.test_version}/$SCRIPT
+wget --tries=10 https://raw.githubusercontent.com/bestwphosting/testing/${var.test_version}/$SCRIPT
 
 for HOST in "$${HOSTS[@]}"; do
   URL="https://$HOST/${var.page_to_test}" ./k6-$K6_VER-linux-$K6_ARCH/k6 run --out csv=$K6_RESULTS $SCRIPT;
   S3_PATH=${var.test_version}/${var.datestamp}/$HOST;
-  aws s3 cp $K6_RESULTS s3://${var.bucket}/$S3_PATH/$${S3_PATH//\//-}-${var.region};
+  aws s3 --region ${var.bucket_region} cp $K6_RESULTS s3://${var.bucket}/$S3_PATH/$${S3_PATH//\//-}-${var.region}.csv;
   rm -f $K6_RESULTS;
 done
 [ -z "$DEBUG" ] || [ "$DEBUG" = "false" ] && sudo shutdown -h now || true

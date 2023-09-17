@@ -1,9 +1,17 @@
+terraform {
+  backend "s3" {
+    bucket = "bestwphosting-terraform"
+    key    = "loadtester-state"
+    region = "us-west-2"
+  }
+}
+
 locals {
   datestamp = formatdate("YYMMDD",plantimestamp())
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.bucket_region
 }
 
 data "aws_vpc" "default" {

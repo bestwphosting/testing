@@ -2,6 +2,10 @@ variable "bucket" {
   type = string
 }
 
+variable "bucket_region" {
+  type = string
+}
+
 variable "datestamp" {
   type = string
 }

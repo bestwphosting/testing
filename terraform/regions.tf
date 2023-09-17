@@ -11,6 +11,7 @@ module "us-east-1" {
   }
 
   bucket = aws_s3_bucket.this.id
+  bucket_region = var.bucket_region
   datestamp = local.datestamp
   debug = var.debug
   hostname = var.hostname
