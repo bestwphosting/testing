@@ -61,6 +61,7 @@ DEBUG=${var.debug}
 HOSTS=(${var.hostname})
 K6_ARCH=arm64 #amd64
 K6_RESULTS=test_results.csv
+K6_RESULTS_SUMMARY=summary.csv
 K6_VER=v0.46.0
 SCRIPT=script.js
 
@@ -71,8 +72,9 @@ wget --tries=10 https://raw.githubusercontent.com/bestwphosting/testing/${var.te
 for HOST in "$${HOSTS[@]}"; do
   URL="https://$HOST/${var.page_to_test}" ./k6-$K6_VER-linux-$K6_ARCH/k6 run --out csv=$K6_RESULTS $SCRIPT;
   S3_PATH=${var.test_version}/${var.datestamp}/$HOST;
-  aws s3 --region ${var.bucket_region} cp $K6_RESULTS s3://${var.bucket}/$S3_PATH/$${S3_PATH//\//-}-${var.region}.csv;
-  rm -f $K6_RESULTS;
+  aws s3 --region ${var.bucket_region} cp $K6_RESULTS s3://${var.bucket}/$S3_PATH/data/$${S3_PATH//\//-}-${var.region}.csv;
+  aws s3 --region ${var.bucket_region} cp $K6_RESULTS_SUMMARY s3://${var.bucket}/$S3_PATH/summary/$${S3_PATH//\//-}-${var.region}-summary.csv;
+  rm -f $K6_RESULTS $K6_RESULTS_SUMMARY;
 done
 [ -z "$DEBUG" ] || [ "$DEBUG" = "false" ] && sudo shutdown -h now || true
 EOF

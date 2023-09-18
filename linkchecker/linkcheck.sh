@@ -5,6 +5,8 @@ PAGE="$2"
 LOOPS=10
 SLEEP=30
 
+TEMP_PAGE=${HOST}.html
+
 [ -z "$PAGE" ] && PAGE="/ecuador-language-tips-learn-before-you-go-large/"
 CURL_HEADERS_INDEX=(-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*")
 CURL_HEADERS_UA=(-H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" --max-time 5)
@@ -22,12 +24,12 @@ function xmlgrep() {
 }
 
 for i in `seq 1 $LOOPS`; do
-	rm -f page.html
+	rm -f $TEMP_PAGE
 	set +e
-	CURL=$(curl -s -o page.html "${CURL_HEADERS_INDEX[@]}" "${CURL_HEADERS_UA[@]}" "https://${HOST}${PAGE}?$RANDOM")
+	CURL=$(curl -s -o $TEMP_PAGE "${CURL_HEADERS_INDEX[@]}" "${CURL_HEADERS_UA[@]}" "https://${HOST}${PAGE}?$RANDOM")
 	set -e
 	# TODO: Give each run a unique name
-	XML=$(cat page.html | xmlstarlet format -H - 2>/dev/null)
+	XML=$(cat $TEMP_PAGE | xmlstarlet format -H - 2>/dev/null)
 	BAD_URLS=()
 	TEST_URLS=()
 	CODES=()
