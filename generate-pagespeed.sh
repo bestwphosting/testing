@@ -1,0 +1,36 @@
+#!/bin/bash -e
+source .env
+BASE_API_URL=https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed
+HOST=$1
+BASE_CURL="curl -s ${BASE_API_URL}"
+
+function get_score() {
+	jq -r $1 $2 
+}
+
+function run_test() {
+	local optimization=$1
+	local type=$2
+
+	local page
+	local output="PageSpeed-${HOST}-${optimization}-${type}.json"
+	local scores=()
+
+	get_url "$optimization"
+
+	echo "Requesting report for $HOST on $page OPT: $optimization TYPE: $type"
+	${BASE_CURL}?strategy=$type\&url=${URL} -o $output
+
+	echo "FCP: " $(get_score '.lighthouseResult.audits."first-contentful-paint".score' $output)
+	echo "LCP: " $(get_score '.lighthouseResult.audits."largest-contentful-paint".score' $output)
+	echo "TBT: " $(get_score '.lighthouseResult.audits."total-blocking-time".score' $output)
+	echo "CLS: " $(get_score '.lighthouseResult.audits."cumulative-layout-shift".score' $output)
+	echo "SpeedIndex: " $(get_score '.lighthouseResult.audits."speed-index".score' $output)
+	echo "Performance: " $(get_score '.lighthouseResult.categories.performance.score' $output)
+}
+
+run_test opt mobile
+run_test opt desktop
+run_test unopt mobile
+run_test unopt desktop
+

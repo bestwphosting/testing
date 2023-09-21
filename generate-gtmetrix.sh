@@ -1,9 +1,8 @@
 #!/bin/bash -e
+source .env
 BASE_CURL="curl -s -u ${GTMETRIX_API_KEY}:"
 BASE_API_URL=https://gtmetrix.com/api/2.0
 HOST=$1
-UNOPT_PAGE="/ecuador-language-tips-learn-before-you-go-large/"
-OPT_PAGE="/ecuador-language-tips-learn-before-you-go/"
 LOCATIONS_MOBILE=(9 11 6 21 2 15 22 5 17 3 7 18)
 
 $BASE_CURL ${BASE_API_URL}/status
@@ -16,11 +15,7 @@ function run_test() {
 	local adtl_json
 	local page
 
-	if [ "$optimization" == "opt" ]; then
-		page=$OPT_PAGE
-	else
-		page=$UNOPT_PAGE
-	fi
+	get_url "$optimization"
 
 	if [ "$type" == "mobile" ]; then
 		adtl_json="\"throttle\": \"15000/10000/100\", \"simulate_device\": \"iphone_13\","
@@ -34,7 +29,7 @@ function run_test() {
 	  \"data\": {
 	    \"type\": \"test\",
 	    \"attributes\": {
-	      \"url\":      \"https://${HOST}${page}\",
+	      \"url\":      \"${URL}\",
 	      \"location\": \"${location}\",
 	      \"browser\":  \"3\",
 	      \"report\":   \"lighthouse\",

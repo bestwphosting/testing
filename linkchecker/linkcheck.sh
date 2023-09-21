@@ -28,15 +28,12 @@ for i in `seq 1 $LOOPS`; do
 	set +e
 	CURL=$(curl -s -o $TEMP_PAGE "${CURL_HEADERS_INDEX[@]}" "${CURL_HEADERS_UA[@]}" "https://${HOST}${PAGE}?$RANDOM")
 	set -e
-	# TODO: Give each run a unique name
 	XML=$(cat $TEMP_PAGE | xmlstarlet format -H - 2>/dev/null)
 	BAD_URLS=()
 	TEST_URLS=()
 	CODES=()
 	unset CONTENT_TYPE
 	declare -A CONTENT_TYPE
-	# $(xmlgrep '//a/@href')
-	#for thing in $(xmlgrep '//img/@srcset'); do
 	for thing in $(xmlgrep '//link/@href') $(xmlgrep '//script/@src') $(xmlgrep '//img/@src') $(xmlgrep '//img/@srcset') $(xmlgrep 'substring-after(//div/@style, "background-image:")' | awk -F"'" '{print $2;}') $(xmlgrep 'substring-after(//a/@style, "background-image:")' | awk -F"'" '{print $2;}'); do
 		validate $thing
 	done
@@ -60,7 +57,7 @@ for i in `seq 1 $LOOPS`; do
 		css)
 			CURL_HEADERS=(-H "Accept: text/css,*/*;q=0.1")
 		;;
-		*) #js | woff2)
+		*)
 			CURL_HEADERS=(-H "Accept: */*")
 		;;
 		esac
