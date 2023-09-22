@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 TEMPLATE_DB=20230920-template.sql
-TEMPLATE_FILES=20230920-template.bestwp.hosting.tar.gz
+TEMPLATE_FILES=20230921-template.bestwp.hosting.tar.gz
 REMOVE_TABLES=remove-all-tables.sql
 HOST_SCRIPT=local-script.sh
 UPDATE_URLS=update-url.sql

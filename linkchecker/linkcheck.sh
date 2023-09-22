@@ -1,13 +1,14 @@
 #!/bin/bash
 set -Eeo pipefail
+source ../.env
 HOST="$1"
 PAGE="$2"
+PAGES=()
 LOOPS=10
 SLEEP=30
 
 TEMP_PAGE=${HOST}.html
 
-[ -z "$PAGE" ] && PAGE="/ecuador-language-tips-learn-before-you-go-large/"
 CURL_HEADERS_INDEX=(-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*")
 CURL_HEADERS_UA=(-H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" --max-time 5)
 
@@ -22,6 +23,16 @@ function validate() {
 function xmlgrep() {
 	echo $XML | xmlstarlet sel -t -v "$1"
 }
+
+if [ -z "$PAGE" ]; then
+	PAGES+=("$OPT_PAGE" "$UNOPT_PAGE")
+else
+	PAGES+=("$PAGE")
+fi
+
+page_loop_count=0
+for PAGE in "${PAGES[@]}"; do
+	page_loop_count=$(( $page_loop_count + 1 ));
 
 for i in `seq 1 $LOOPS`; do
 	rm -f $TEMP_PAGE
@@ -87,4 +98,12 @@ for i in `seq 1 $LOOPS`; do
 	done
 
 	[ "$i" != $LOOPS ] && echo "[${i}/${LOOPS}] Sleeping..." && sleep $SLEEP
+done
+
+	if [ "$page_loop_count" != "${#PAGES[@]}" ]; then
+		read -p "Continue? [y/N]? " answer
+		if [[ $answer =~ ^[Nn] ]] || [[ "$answer" == "" ]]; then
+			exit 1
+		fi
+	fi
 done
