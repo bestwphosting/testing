@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source .env
+source common
 BASE_API_URL=https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed
 HOST=$1
 BASE_CURL="curl -s ${BASE_API_URL}"
@@ -13,7 +13,7 @@ function run_test() {
 	local type=$2
 
 	local page
-	local output="PageSpeed-${HOST}-${optimization}-${type}.json"
+	local output="$(datestamp)-${HOST}-${optimization}-${type}-PageSpeed.json"
 	local scores=()
 
 	get_url "$optimization"
@@ -29,8 +29,8 @@ function run_test() {
 	echo "Performance: " $(get_score '.lighthouseResult.categories.performance.score' $output)
 }
 
+echo "Report time: $(datestamp)"
 run_test opt mobile
 run_test opt desktop
 run_test unopt mobile
 run_test unopt desktop
-

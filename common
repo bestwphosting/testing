@@ -1,0 +1,28 @@
+source .env
+export UNOPT_PAGE="/ecuador-language-tips-learn-before-you-go-large-noyt/"
+export OPT_PAGE="/ecuador-language-tips-learn-before-you-go/"
+export LARGE_PAGE="/ecuador-language-tips-learn-before-you-go-large/"
+
+[ -z "$1" ] && echo "No host specified" && exit 1
+
+function datestamp() {
+	date +%Y%m%d%H%:::z
+}
+
+function get_url() {
+	local optimization=$1
+
+	case "$optimization" in
+	"large")
+		page=$LARGE_PAGE
+		;;
+	"opt")
+		page=$OPT_PAGE
+		;;
+	"unopt")
+		page=$UNOPT_PAGE
+		;;
+	esac
+
+	URL="https://${HOST}${page}"
+}
