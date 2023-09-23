@@ -1,6 +1,6 @@
 #!/bin/bash
 set -Eeo pipefail
-source ../.env
+source "${BASH_SOURCE%/*}/../common"
 HOST="$1"
 PAGE="$2"
 PAGES=()

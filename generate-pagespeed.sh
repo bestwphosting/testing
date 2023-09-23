@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source common
+source "${BASH_SOURCE%/*}/common"
 BASE_API_URL=https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed
 HOST=$1
 BASE_CURL="curl -s ${BASE_API_URL}"

@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source common
+source "${BASH_SOURCE%/*}/common"
 BASE_CURL="curl -s -u ${GTMETRIX_API_KEY}:"
 BASE_API_URL=https://gtmetrix.com/api/2.0
 HOST=$1

@@ -1,4 +1,4 @@
-source .env
+source "${BASH_SOURCE%/*}/.env"
 export UNOPT_PAGE="/ecuador-language-tips-learn-before-you-go-large-noyt/"
 export OPT_PAGE="/ecuador-language-tips-learn-before-you-go/"
 export LARGE_PAGE="/ecuador-language-tips-learn-before-you-go-large/"
