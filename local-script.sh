@@ -6,15 +6,23 @@ if [ ! -d "$PUBLIC_HTML_DIR" ]; then
 	[ -d public ] && PUBLIC_HTML_DIR=public;
 	# SiteGround
 	[ -d "www/${WEBSITE_HOSTNAME}/public_html" ] && PUBLIC_HTML_DIR=www/${WEBSITE_HOSTNAME}/public_html
+	# Pressable
+	[ -d htdocs ] && PUBLIC_HTML_DIR=htdocs
 fi
 
 TARGET_WP_CONTENT_DIR=${PUBLIC_HTML_DIR}/wp-content
 
 echo "Checking existing DB config..."
-DB_NAME=$(grep DB_NAME ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
-DB_USER=$(grep DB_USER ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
-DB_HOST=$(grep DB_HOST ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
-DB_PASSWORD=$(grep DB_PASSWORD ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
+if [ -z "$MYSQL_PWD" ]; then
+	DB_NAME=$(grep "define('DB_NAME" ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
+	DB_USER=$(grep "define('DB_USER" ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
+	DB_HOST=$(grep "define('DB_HOST" ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
+	DB_PASSWORD=$(grep "define('DB_PASSWORD" ${PUBLIC_HTML_DIR}/wp-config.php | cut -d"'" -f4)
+else
+	# Pressable (others are in env)
+	DB_HOST=127.0.0.1
+	DB_PASSWORD=$MYSQL_PWD
+fi
 
 echo "Making a backup copy of existing public_html..."
 [ ! -d public_html-orig ] && cp -pR ${PUBLIC_HTML_DIR} public_html-orig
