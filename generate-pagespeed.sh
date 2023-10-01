@@ -21,11 +21,11 @@ function run_test() {
 	echo "Requesting report for $HOST on $page OPT: $optimization TYPE: $type"
 	${BASE_CURL}?strategy=$type\&url=${URL} -o $output
 
-	echo "FCP: " $(get_score '.lighthouseResult.audits."first-contentful-paint".score' $output)
-	echo "LCP: " $(get_score '.lighthouseResult.audits."largest-contentful-paint".score' $output)
-	echo "TBT: " $(get_score '.lighthouseResult.audits."total-blocking-time".score' $output)
-	echo "CLS: " $(get_score '.lighthouseResult.audits."cumulative-layout-shift".score' $output)
-	echo "SpeedIndex: " $(get_score '.lighthouseResult.audits."speed-index".score' $output)
+	echo "FCP: " $(get_score '.lighthouseResult.audits."first-contentful-paint".score' $output) $(get_score '.lighthouseResult.audits."first-contentful-paint".displayValue' $output)
+	echo "LCP: " $(get_score '.lighthouseResult.audits."largest-contentful-paint".score' $output) $(get_score '.lighthouseResult.audits."largest-contentful-paint".displayValue' $output)
+	echo "TBT: " $(get_score '.lighthouseResult.audits."total-blocking-time".score' $output) $(get_score '.lighthouseResult.audits."total-blocking-time".displayValue' $output)
+	echo "CLS: " $(get_score '.lighthouseResult.audits."cumulative-layout-shift".score' $output) $(get_score '.lighthouseResult.audits."cumulative-layout-shift".displayValue' $output)
+	echo "SpeedIndex: " $(get_score '.lighthouseResult.audits."speed-index".score' $output) $(get_score '.lighthouseResult.audits."speed-index".displayValue' $output)
 	echo "Performance: " $(get_score '.lighthouseResult.categories.performance.score' $output)
 }
 
