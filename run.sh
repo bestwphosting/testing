@@ -26,3 +26,5 @@ terraform plan "$@" -out plan
 read -p 'Continue? [y/N]' continue
 ! [[ "$continue" =~ ^[yY]$ ]] && exit
 terraform apply plan
+
+echo "Load test started at $(date)"
