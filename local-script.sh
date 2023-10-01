@@ -3,12 +3,16 @@ PUBLIC_HTML_DIR=public_html
 
 if [ ! -d "$PUBLIC_HTML_DIR" ]; then
 	# Kinsta
-	[ -d public ] && PUBLIC_HTML_DIR=public;
+	[ -d public ] && PUBLIC_HTML_DIR=public
 	# SiteGround
 	[ -d "www/${WEBSITE_HOSTNAME}/public_html" ] && PUBLIC_HTML_DIR=www/${WEBSITE_HOSTNAME}/public_html
 	# Pressable
 	[ -d htdocs ] && PUBLIC_HTML_DIR=htdocs
 	[ -d sites/nomadingworld ] && PUBLIC_HTML_DIR=sites/nomadingworld
+	# IONOS
+	[ -d wordpress ] && PUBLIC_HTML_DIR=wordpress
+	# GoDaddy
+	[ -d html ] && PUBLIC_HTML_DIR=html
 fi
 
 TARGET_WP_CONTENT_DIR=${PUBLIC_HTML_DIR}/wp-content
