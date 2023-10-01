@@ -75,7 +75,11 @@ for i in `seq 1 $LOOPS`; do
 
 		read -r code type <<< $(curl "${CURL_HEADERS[@]}" "${CURL_HEADERS_UA[@]}" --head -w "%{http_code} %{content_type}" -o /dev/null -s "$url"); 
 		echo "$url $code $type";
-		type=$(echo $type | awk -F',' '{print $1}' | awk -F"/" '{print $2}' | awk -F"[^[:alpha:]]" '{print $1}')
+		if [ -n "$type" ]; then
+			type=$(echo $type | awk -F',' '{print $1}' | awk -F"/" '{print $2}' | awk -F"[^[:alpha:]]" '{print $1}')
+		else
+			type=$(basename $url | cut -d '.' -f2)
+		fi
 
 		if [ "$code" == "200" ]; then 
 	        	CODES[$code]+="${url},"
