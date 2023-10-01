@@ -3,7 +3,8 @@ source "${BASH_SOURCE%/*}/common"
 BASE_CURL="curl -s -u ${GTMETRIX_API_KEY}:"
 BASE_API_URL=https://gtmetrix.com/api/2.0
 HOST=$1
-LOCATIONS_MOBILE=(9 11 6 21 2 15 22 5 17 3 7 18)
+LOCATIONS_OPT=(1 9 11 6 21 2 15 22 5 17 3 7 18)
+LOCATIONS_UNOPT=(2 5 17)
 
 $BASE_CURL ${BASE_API_URL}/status
 
@@ -76,11 +77,10 @@ function run_test() {
 	done
 }
 
-run_test 1 "unopt" "desktop" 
-run_test 1 "opt" "desktop"
-run_test 1 "unopt" "mobile"
-run_test 1 "opt" "mobile"
+for id in "${LOCATIONS_OPT[@]}"; do
+       run_test $id "opt" "mobile"
+done
 
-for id in "${LOCATIONS_MOBILE[@]}"; do
+for id in "${LOCATIONS_UNOPT[@]}"; do
        run_test $id "unopt" "mobile"
 done
