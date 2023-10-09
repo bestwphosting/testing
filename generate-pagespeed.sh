@@ -20,17 +20,24 @@ function run_test() {
 
 	echo "Requesting report for $HOST on $page OPT: $optimization TYPE: $type"
 	${BASE_CURL}?strategy=$type\&url=${URL} -o $output
-
-	echo "FCP: " $(get_score '.lighthouseResult.audits."first-contentful-paint".score' $output) $(get_score '.lighthouseResult.audits."first-contentful-paint".displayValue' $output)
-	echo "LCP: " $(get_score '.lighthouseResult.audits."largest-contentful-paint".score' $output) $(get_score '.lighthouseResult.audits."largest-contentful-paint".displayValue' $output)
-	echo "TBT: " $(get_score '.lighthouseResult.audits."total-blocking-time".score' $output) $(get_score '.lighthouseResult.audits."total-blocking-time".displayValue' $output)
-	echo "CLS: " $(get_score '.lighthouseResult.audits."cumulative-layout-shift".score' $output) $(get_score '.lighthouseResult.audits."cumulative-layout-shift".displayValue' $output)
-	echo "SpeedIndex: " $(get_score '.lighthouseResult.audits."speed-index".score' $output) $(get_score '.lighthouseResult.audits."speed-index".displayValue' $output)
-	echo "Performance: " $(get_score '.lighthouseResult.categories.performance.score' $output)
+	show_scores $output
 }
 
-echo "Report time: $(datestamp)"
-run_test opt mobile
-run_test opt desktop
-run_test unopt mobile
-run_test unopt desktop
+function show_scores() {
+	echo "FCP: " $(get_score '.lighthouseResult.audits."first-contentful-paint".score' $1) $(get_score '.lighthouseResult.audits."first-contentful-paint".displayValue' $1)
+	echo "LCP: " $(get_score '.lighthouseResult.audits."largest-contentful-paint".score' $1) $(get_score '.lighthouseResult.audits."largest-contentful-paint".displayValue' $1)
+	echo "TBT: " $(get_score '.lighthouseResult.audits."total-blocking-time".score' $1) $(get_score '.lighthouseResult.audits."total-blocking-time".displayValue' $1)
+	echo "CLS: " $(get_score '.lighthouseResult.audits."cumulative-layout-shift".score' $1) $(get_score '.lighthouseResult.audits."cumulative-layout-shift".displayValue' $1)
+	echo "SpeedIndex: " $(get_score '.lighthouseResult.audits."speed-index".score' $1) $(get_score '.lighthouseResult.audits."speed-index".displayValue' $1)
+	echo "Performance: " $(get_score '.lighthouseResult.categories.performance.score' $1)
+}
+
+if [ -f "$HOST" ]; then
+	show_scores $HOST
+else
+	echo "Report time: $(datestamp)"
+	run_test opt mobile
+	run_test opt desktop
+	run_test unopt mobile
+	run_test unopt desktop
+fi
