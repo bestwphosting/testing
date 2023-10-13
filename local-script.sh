@@ -1,7 +1,11 @@
 #!/bin/bash -ex
 PUBLIC_HTML_DIR=public_html
 
-if [ ! -d "$PUBLIC_HTML_DIR" ]; then
+# Hostinger
+if [ -L "$PUBLIC_HTML_DIR" ]; then
+  PUBLIC_HTML_DIR=$(readlink $PUBLIC_HTML_DIR)
+else
+  if [ ! -d "$PUBLIC_HTML_DIR" ]; then
 	# Kinsta
 	[ -d public ] && PUBLIC_HTML_DIR=public
 	# SiteGround
@@ -13,6 +17,7 @@ if [ ! -d "$PUBLIC_HTML_DIR" ]; then
 	[ -d wordpress ] && PUBLIC_HTML_DIR=wordpress
 	# GoDaddy
 	[ -d html ] && PUBLIC_HTML_DIR=html
+  fi
 fi
 
 TARGET_WP_CONTENT_DIR=${PUBLIC_HTML_DIR}/wp-content
