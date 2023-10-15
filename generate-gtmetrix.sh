@@ -65,6 +65,7 @@ function run_test() {
 				local report_id=$(echo $test_output | jq -r .data.attributes.report)
 				sleep 5
 				run_test $1 $2 $3 $report_id
+				continue
 			fi
 			local report_link=$(echo $test_output | jq -r .data.links.report)
 			local report_download=$($BASE_CURL $report_link | jq -r .data.links.report_pdf)
