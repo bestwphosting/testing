@@ -6,8 +6,13 @@ BASE_API_URL=https://gtmetrix.com/api/2.0
 HOST=$1
 LOCATIONS_OPT=(1 9 11 6 21 2 15 22 5 17 3 7 18)
 LOCATIONS_UNOPT=(2 5 17)
+REPORTS_DIR=reports/$HOST
+TIMESTAMP=$(datestamp)
 
 $BASE_CURL ${BASE_API_URL}/status
+
+mkdir -p $REPORTS_DIR
+cd $REPORTS_DIR
 
 function run_test() {
 	local location=$1
@@ -69,7 +74,7 @@ function run_test() {
 			fi
 			local report_link=$(echo $test_output | jq -r .data.links.report)
 			local report_download=$($BASE_CURL $report_link | jq -r .data.links.report_pdf)
-			$BASE_CURL -o $(datestamp)-${HOST}-${optimization}-${type}-${location}-GTMetrix.pdf -L $report_download
+			$BASE_CURL -o ${TIMESTAMP}-${HOST}-${optimization}-${type}-${location}-GTMetrix.pdf -L $report_download
 			continue
 		elif [ "$test_state" == "error" ]; then
 			echo $test_output | jq -r .data.attributes.error
