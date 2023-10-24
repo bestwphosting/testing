@@ -17,6 +17,8 @@ else
 	[ -d wordpress ] && PUBLIC_HTML_DIR=wordpress
 	# GoDaddy
 	[ -d html ] && PUBLIC_HTML_DIR=html
+	# Dreamhost
+	[ -d "${WEBSITE_HOSTNAME}" ] && PUBLIC_HTML_DIR=${WEBSITE_HOSTNAME}
   fi
 fi
 
