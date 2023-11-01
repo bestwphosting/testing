@@ -56,6 +56,12 @@ cp -R template.bestwp.hosting/wp-content/* ${TARGET_WP_CONTENT_DIR}/
 cp template.bestwp.hosting/robots.txt ${PUBLIC_HTML_DIR}/
 [ ! -f ${PUBLIC_HTML_DIR}/.htaccess ] && echo "Copying template .htaccess" && cp template.bestwp.hosting/.htaccess ${PUBLIC_HTML_DIR}/.htaccess
 
+DB_BACKUP=original.db
+if [ ! -f $DB_BACKUP ] && which mysqldump; then
+	echo "Backing up original database..."
+	mysqldump -u "$DB_USER" -p${DB_PASSWORD} --host=$DB_HOST $DB_PORT --result-file=$DB_BACKUP --no-tablespaces --all-databases
+fi
+
 echo "Updating database..."
 TABLE_PREFIX=$(grep table_prefix template.bestwp.hosting/wp-config.php | cut -d"'" -f2)
 sed -i "s/^\$table_prefix.*/\$table_prefix = '${TABLE_PREFIX}';/" ${PUBLIC_HTML_DIR}/wp-config.php
