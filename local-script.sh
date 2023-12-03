@@ -19,6 +19,8 @@ else
 	[ -d html ] && PUBLIC_HTML_DIR=html
 	# Dreamhost
 	[ -d "${WEBSITE_HOSTNAME}" ] && PUBLIC_HTML_DIR=${WEBSITE_HOSTNAME}
+	# Cloudways
+	[ -d "applications" ] && PUBLIC_HTML_DIR=applications/*/public_html
   fi
 fi
 
