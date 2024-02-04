@@ -36,8 +36,15 @@ for PAGE in "${PAGES[@]}"; do
 
 for i in `seq 1 $LOOPS`; do
 	rm -f $TEMP_PAGE
+	if [ "$i" == "$LOOPS" ]; then
+		ADD_RANDOM=
+	else
+		ADD_RANDOM="?$RANDOM"
+	fi
+	TEST_URL="https://${HOST}${PAGE}${ADD_RANDOM}"
 	set +e
-	CURL=$(curl -s -o $TEMP_PAGE "${CURL_HEADERS_INDEX[@]}" "${CURL_HEADERS_UA[@]}" "https://${HOST}${PAGE}?$RANDOM")
+	echo "Testing $TEST_URL"
+	CURL=$(curl -s -o $TEMP_PAGE "${CURL_HEADERS_INDEX[@]}" "${CURL_HEADERS_UA[@]}" "$TEST_URL")
 	set -e
 	XML=$(cat $TEMP_PAGE | xmlstarlet format -H - 2>/dev/null)
 	BAD_URLS=()
